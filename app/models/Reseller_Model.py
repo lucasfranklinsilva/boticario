@@ -1,8 +1,9 @@
+from app import Constants
 from app.models_configuration import *
 
 class Reseller_Model(db.Model):
 
-    __tablename__ = 'Reseller'
+    __tablename__ = Constants.T_RESELLER
 
     id_reseller = db.Column(db.BigInteger, primary_key=True, unique=True, nullable=False, autoincrement=True)
     email = db.Column(db.String(255), nullable=False, unique=True)

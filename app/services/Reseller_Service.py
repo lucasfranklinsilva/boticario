@@ -2,6 +2,8 @@ import json
 
 from flask import current_app
 from flask_jsonpify import jsonify
+
+from .. import Constants
 from ..models.Reseller_Model import Reseller_Model as Reseller
 from ..serealizer import Reseller_Schema
 
@@ -40,7 +42,7 @@ class Reseller_Service:
 
         current_app.db.session.commit()
 
-        return jsonify('Success')
+        return jsonify(Constants.SUCCESS_MESSAGE)
 
     def delete_reseller(self, id_reseller):
 
@@ -48,4 +50,4 @@ class Reseller_Service:
 
         current_app.db.session.commit()
 
-        return jsonify('Success')
+        return jsonify(Constants.SUCCESS_MESSAGE)

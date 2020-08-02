@@ -1,9 +1,10 @@
+from app import Constants
 from app.models_configuration import *
 
 
 class Cashback_Model(db.Model):
 
-    __tablename__ = 'Cashback'
+    __tablename__ = Constants.T_CASH_BACK
 
     id_cashback = db.Column(db.BigInteger, primary_key=True, unique=True, nullable=False, autoincrement=True)
     purchase_amount = db.Column(db.FLOAT, nullable=False)

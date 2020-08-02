@@ -2,9 +2,8 @@ import json
 
 from flask import current_app
 from flask_jsonpify import jsonify
-from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy import exc
 
+from .. import Constants
 from ..models.Cashback_Model import Cashback_Model as Cashback
 from ..serealizer import Cashback_Schema
 
@@ -13,14 +12,7 @@ class Cashback_Service:
 
     def get_all_cashbacks(self):
 
-        try:
-            result = Cashback.query.all()
-
-        except SQLAlchemyError as e:
-
-            error = str(e.__cause__)
-
-            return jsonify(error)
+        result = Cashback.query.all()
 
         return Cashback_Schema(many=True).jsonify(result)
 
@@ -52,14 +44,14 @@ class Cashback_Service:
 
         current_app.db.session.commit()
 
-        return jsonify('Success')
+        return jsonify(Constants.SUCCESS_MESSAGE)
 
 
     def delete_cashback(self, id_cashback):
 
-            Cashback.query.filter(Cashback.id_cashback == id_cashback).delete()
+        Cashback.query.filter(Cashback.id_cashback == id_cashback).delete()
 
-            current_app.db.session.commit()
+        current_app.db.session.commit()
 
-            return jsonify('Success')
+        return jsonify(Constants.SUCCESS_MESSAGE)
 

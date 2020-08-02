@@ -15,7 +15,7 @@ def create():
 
     try:
 
-        return purchase_service.new_purchase(request.json), Constants.CREATED
+        return purchase_service.new_purchase(request.json), Constants.HTTP_CREATED
 
     except SQLAlchemyError as e:
 
@@ -26,7 +26,7 @@ def get_all():
 
     try:
 
-        return purchase_service.get_all_purchases(), Constants.SUCCESS
+        return purchase_service.get_all_purchases(), Constants.HTTP_SUCCESS
 
     except SQLAlchemyError as e:
 
@@ -37,7 +37,7 @@ def get(id_purchase):
 
     try:
 
-        return purchase_service.get_purchase(id_purchase), Constants.SUCCESS
+        return purchase_service.get_purchase(id_purchase), Constants.HTTP_SUCCESS
 
     except SQLAlchemyError as e:
 
@@ -48,7 +48,7 @@ def update(id_purchase):
 
     try:
 
-        return purchase_service.update_purchase(id_purchase, request.json), Constants.SUCCESS
+        return purchase_service.update_purchase(id_purchase, request.json), Constants.HTTP_SUCCESS
 
     except SQLAlchemyError as e:
 
@@ -59,7 +59,7 @@ def delete(id_purchase):
 
     try:
 
-        return purchase_service.delete_purchase(id_purchase), Constants.SUCCESS
+        return purchase_service.delete_purchase(id_purchase), Constants.HTTP_SUCCESS
 
     except SQLAlchemyError as e:
 
@@ -69,4 +69,4 @@ def error_hanlder(e):
 
     error = str(e.__cause__)
 
-    return jsonify(error), Constants.BAD_REQUEST
+    return jsonify(error), Constants.HTTP_BAD_REQUEST

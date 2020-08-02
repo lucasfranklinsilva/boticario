@@ -4,6 +4,7 @@ from flask import Flask
 from flask_migrate import Migrate
 from werkzeug.exceptions import HTTPException
 
+from app import Constants
 from app.models_configuration import configure as config_db, db
 from app.serealizer import configure as config_ma
 from app.controllers.Reseller_Controller import reseller_bp
@@ -14,7 +15,7 @@ from app.controllers.Cashback_Controller import cashback_bp
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root123@@localhost:3306/boticario'
+app.config['SQLALCHEMY_DATABASE_URI'] = Constants.DB_CONNECTION_STRING
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 config_db(app)
@@ -38,7 +39,7 @@ def handle_exception(e):
         "name": e.name,
         "description": e.description,
     })
-    response.content_type = "application/json"
+    response.content_type = Constants.JSON_CONTENT
 
     return response
 

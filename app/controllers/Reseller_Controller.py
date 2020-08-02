@@ -15,7 +15,7 @@ def create():
 
     try:
 
-        return real_estate_service.new_reseller(request.json), Constants.CREATED
+        return real_estate_service.new_reseller(request.json), Constants.HTTP_CREATED
 
     except SQLAlchemyError as e:
 
@@ -27,7 +27,7 @@ def get_all():
 
     try:
 
-        return real_estate_service.get_all_resellers(), Constants.SUCCESS
+        return real_estate_service.get_all_resellers(), Constants.HTTP_SUCCESS
 
     except SQLAlchemyError as e:
 
@@ -38,7 +38,7 @@ def get(reseller_id):
 
     try:
 
-        return real_estate_service.get_reseller(reseller_id), Constants.SUCCESS
+        return real_estate_service.get_reseller(reseller_id), Constants.HTTP_SUCCESS
 
     except SQLAlchemyError as e:
 
@@ -50,7 +50,7 @@ def update(reseller_id):
 
     try:
 
-        return real_estate_service.update_reseller(reseller_id, request.json), Constants.SUCCESS
+        return real_estate_service.update_reseller(reseller_id, request.json), Constants.HTTP_SUCCESS
 
     except SQLAlchemyError as e:
 
@@ -62,7 +62,7 @@ def delete(reseller_id):
 
     try:
 
-        return real_estate_service.delete_reseller(reseller_id), Constants.SUCCESS
+        return real_estate_service.delete_reseller(reseller_id), Constants.HTTP_SUCCESS
 
     except SQLAlchemyError as e:
 
@@ -73,4 +73,4 @@ def error_hanlder(e):
 
     error = str(e.__cause__)
 
-    return jsonify(error), Constants.BAD_REQUEST
+    return jsonify(error), Constants.HTTP_BAD_REQUEST
