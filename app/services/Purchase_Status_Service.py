@@ -2,6 +2,8 @@ import json
 
 from flask import current_app
 from flask_jsonpify import jsonify
+
+from .. import Constants
 from ..models.Purchase_Status_Model import Purchase_Status_Model as Purchase_Status
 from ..serealizer import Purchase_Status_Schema
 
@@ -40,7 +42,7 @@ class Purchase_Status_Service:
 
         current_app.db.session.commit()
 
-        return jsonify('Success')
+        return jsonify(Constants.SUCCESS_MESSAGE)
 
     def delete_purchase_status(self, id_purchase_status):
 
@@ -48,6 +50,6 @@ class Purchase_Status_Service:
 
         current_app.db.session.commit()
 
-        return jsonify('Success')
+        return jsonify(Constants.SUCCESS_MESSAGE)
 
 

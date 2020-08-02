@@ -16,7 +16,7 @@ def create():
 
     try:
 
-        return cash_back_service.new_cashback(request.json), Constants.CREATED
+        return cash_back_service.new_cashback(request.json), Constants.HTTP_CREATED
 
     except SQLAlchemyError as e:
 
@@ -27,7 +27,7 @@ def get_all():
 
     try:
 
-        return cash_back_service.get_all_cashbacks(), Constants.SUCCESS
+        return cash_back_service.get_all_cashbacks(), Constants.HTTP_SUCCESS
 
     except SQLAlchemyError as e:
 
@@ -38,7 +38,7 @@ def get(id_cashback):
 
     try:
 
-        return cash_back_service.get_cashback(id_cashback), Constants.SUCCESS
+        return cash_back_service.get_cashback(id_cashback), Constants.HTTP_SUCCESS
 
     except SQLAlchemyError as e:
 
@@ -49,7 +49,7 @@ def update(id_cashback):
 
     try:
 
-        return cash_back_service.update_cashback(id_cashback, request.json), Constants.SUCCESS
+        return cash_back_service.update_cashback(id_cashback, request.json), Constants.HTTP_SUCCESS
 
     except SQLAlchemyError as e:
 
@@ -61,7 +61,7 @@ def delete(id_cashback):
 
     try:
 
-        return cash_back_service.delete_cashback(id_cashback), Constants.SUCCESS
+        return cash_back_service.delete_cashback(id_cashback), Constants.HTTP_SUCCESS
 
     except SQLAlchemyError as e:
 
@@ -72,4 +72,4 @@ def error_hanlder(e):
 
     error = str(e.__cause__)
 
-    return jsonify(error), Constants.BAD_REQUEST
+    return jsonify(error), Constants.HTTP_BAD_REQUEST
