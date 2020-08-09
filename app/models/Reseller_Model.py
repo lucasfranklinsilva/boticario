@@ -1,9 +1,9 @@
-from app import Constants
+from app import constants
 from app.models_configuration import *
 
 class Reseller_Model(db.Model):
 
-    __tablename__ = Constants.T_RESELLER
+    __tablename__ = constants.T_RESELLER
 
     id_reseller = db.Column(db.BigInteger, primary_key=True, unique=True, nullable=False, autoincrement=True)
     email = db.Column(db.String(255), nullable=False, unique=True)
@@ -21,7 +21,6 @@ class Reseller_Model(db.Model):
     phone = db.Column(db.String(25))
     is_active = db.Column(db.BOOLEAN, nullable=False)
     last_updated = db.Column(db.DATETIME, nullable=False)
-
 
     def init(self, email, create_date, salt_password, hash_password, first_name, last_name,
                  cpf, isactive, last_updated, street = '', city = '', state = '', country = '', zipcode = '', phone = ''):

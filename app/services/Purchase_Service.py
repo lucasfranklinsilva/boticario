@@ -1,11 +1,18 @@
 import json
+import re
 
 from flask import current_app
 from flask_jsonpify import jsonify
+from sqlalchemy import desc
 
-from .. import Constants
 from ..models.Purchase_Model import Purchase_Model as Purchase
+from ..models.Reseller_Model import Reseller_Model as Reseller
+from ..models.Cashback_Model import Cashback_Model as Cashback
+from ..models.Purchase_Status_Model import Purchase_Status_Model as Purchase_Status
 from ..serealizer import Purchase_Schema
+
+from ..constants import PURCHASE_DEFAULT_STATUS_ID, PURCHASE_APROVED_STATUS_ID, PURCHASE_USER_EXCEPTION, \
+    F_PURCHASE_STATUS_ID, F_RESELLER_ID, J_CPF, ACTIVE_STATUS, F_CASHBACK_PERCENT, J_PRODUCT_PRICE, SUCCESS_MESSAGE
 
 
 class Purchase_Service:
@@ -13,6 +20,11 @@ class Purchase_Service:
     def get_all_purchases(self):
 
         result = Purchase.query.all()
+
+        for purchase in result:
+            Purchase.cash_back_amount = property(lambda self: self.product_price * purchase.cash_back)
+            purchase.status = self.get_purchase_status(purchase.purchase_status_id)
+            purchase.cpf = self.get_resseler_cpf(purchase.reseller_id)
 
         return Purchase_Schema(many=True).jsonify(result)
 
@@ -26,6 +38,16 @@ class Purchase_Service:
 
         data = json.loads(json.dumps(json_data))
 
+        data[F_PURCHASE_STATUS_ID] = self.set_purchase_status(data[J_CPF])
+
+        data[J_CPF] = re.sub("[^0-9]", "", data[J_CPF])
+
+        data[F_RESELLER_ID] = self.get_resseler_id(data[J_CPF])
+
+        data.pop(J_CPF)
+
+        data[F_CASHBACK_PERCENT] = self.set_cash_back(data[J_PRODUCT_PRICE])
+
         post = Purchase(**data)
 
         current_app.db.session.add(post)
@@ -33,6 +55,8 @@ class Purchase_Service:
         current_app.db.session.commit()
 
         return Purchase_Schema().jsonify(post)
+
+        return True
 
     def update_purchase(self, id_purchase, json_data):
 
@@ -42,7 +66,7 @@ class Purchase_Service:
 
         current_app.db.session.commit()
 
-        return jsonify(Constants.SUCCESS_MESSAGE)
+        return jsonify(SUCCESS_MESSAGE)
 
     def delete_purchase(self, id_purchase):
 
@@ -50,6 +74,50 @@ class Purchase_Service:
 
         current_app.db.session.commit()
 
-        return jsonify(Constants.SUCCESS_MESSAGE)
+        return jsonify(SUCCESS_MESSAGE)
+
+    def set_purchase_status(self, resseler_cpf):
+
+        if PURCHASE_USER_EXCEPTION == resseler_cpf:
+            return PURCHASE_APROVED_STATUS_ID
+
+        return PURCHASE_DEFAULT_STATUS_ID
+
+    def get_resseler_id(self, resseler_cpf):
+
+        result = Reseller.query.filter(Reseller.cpf == resseler_cpf).all()
+
+        return result[0].id_reseller
+
+    def get_resseler_cpf(self, resseler_id):
+
+        result = Reseller.query.filter(Reseller.id_reseller == resseler_id).all()
+
+        if result[0]:
+            return result[0].cpf
+
+        return None
+
+    def set_cash_back(self, purchase_amount):
+
+        cash_back = Cashback.query.filter(Cashback.is_active == ACTIVE_STATUS). \
+            order_by(desc(Cashback.purchase_amount)).all()
+
+        for cash in cash_back:
+            if purchase_amount > cash.purchase_amount:
+                return cash.percentage / 100
+
+        return 0
+
+    def get_purchase_status(self, purchase_status_id):
+
+        result = Purchase_Status.query.filter(Purchase_Status.id_purchase_status == purchase_status_id,
+                                              Purchase_Status.is_active == ACTIVE_STATUS).all()
+
+
+        if result[0]:
+            return result[0].status
+
+        return None
 
 
