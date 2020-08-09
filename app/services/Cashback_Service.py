@@ -1,9 +1,11 @@
 import json
 
+import requests
 from flask import current_app
 from flask_jsonpify import jsonify
 
-from .. import Constants
+from .. import constants
+from ..constants import API_CASHBACK_URL, API_HEADER
 from ..models.Cashback_Model import Cashback_Model as Cashback
 from ..serealizer import Cashback_Schema
 
@@ -19,8 +21,6 @@ class Cashback_Service:
     def get_cashback(self, id_cashback):
 
         result = Cashback.query.filter(Cashback.id_cashback == id_cashback)
-
-        print(result)
 
         return Cashback_Schema(many=True).jsonify(result)
 
@@ -44,8 +44,7 @@ class Cashback_Service:
 
         current_app.db.session.commit()
 
-        return jsonify(Constants.SUCCESS_MESSAGE)
-
+        return jsonify(constants.SUCCESS_MESSAGE)
 
     def delete_cashback(self, id_cashback):
 
@@ -53,5 +52,14 @@ class Cashback_Service:
 
         current_app.db.session.commit()
 
-        return jsonify(Constants.SUCCESS_MESSAGE)
+        return jsonify(constants.SUCCESS_MESSAGE)
 
+    def get_cash_back_total_amount(self, cpf):
+
+        response = requests.get(API_CASHBACK_URL + cpf, headers=API_HEADER)
+
+        if response.status_code == 200:
+
+            return response.json()
+
+        return None

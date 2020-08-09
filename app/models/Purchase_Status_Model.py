@@ -1,10 +1,10 @@
-from app import Constants
+from app import constants
 from app.models_configuration import *
 
 
 class Purchase_Status_Model(db.Model):
 
-    __tablename__ = Constants.T_PURCHASE_STATUS
+    __tablename__ = constants.T_PURCHASE_STATUS
 
     id_purchase_status = db.Column(db.BigInteger, primary_key=True, unique=True, nullable=False, autoincrement=True)
     status = db.Column(db.String(45), unique=True, nullable=False)

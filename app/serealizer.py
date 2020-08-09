@@ -10,7 +10,7 @@ def configure(app):
 class Purchase_Schema(ma.SQLAlchemySchema):
     class Meta:
         fields = ('product_code', 'product_price', 'date',
-                  'reseller_id', 'purchase_status_id', 'cash_back_id')
+                  'cash_back', 'cash_back_amount', 'status', 'cpf')
 
 class Cashback_Schema(ma.SQLAlchemySchema):
     class Meta:
