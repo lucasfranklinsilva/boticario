@@ -1,13 +1,20 @@
 import json
+import logging
+import sys
+import requests
 
 from flask import current_app
 from flask_jsonpify import jsonify
 
+from .. import constants
+from ..constants import API_CASHBACK_URL, API_HEADER
 from ..models.Cashback_Model import Cashback_Model as Cashback
 from ..serealizer import Cashback_Schema
 
 
-class RealEstateTypeService:
+class Cashback_Service:
+
+    logger = logging.getLogger()
 
     def get_all_cashbacks(self):
 
@@ -19,37 +26,71 @@ class RealEstateTypeService:
 
         result = Cashback.query.filter(Cashback.id_cashback == id_cashback)
 
-        print(result)
-
         return Cashback_Schema(many=True).jsonify(result)
 
     def new_cashback(self, json_data):
 
-        data = json.loads(json.dumps(json_data))
+        try:
 
-        post = Cashback(**data)
+            data = json.loads(json.dumps(json_data))
 
-        current_app.db.session.add(post)
+            post = Cashback(**data)
 
-        current_app.db.session.commit()
+            current_app.db.session.add(post)
 
-        return Cashback_Schema().jsonify(post)
+            current_app.db.session.commit()
+
+            return Cashback_Schema().jsonify(post)
+
+        except:
+
+            self.logger.error(sys.exc_info()[0])
+
+        return jsonify({'message': 'Something unexpected happened!'})
+
 
     def update_cashback(self, id_cashback, json_data):
 
-        query = Cashback.query.filter(Cashback.id_cashback == id_cashback)
+        try:
 
-        query.update(json_data)
+            query = Cashback.query.filter(Cashback.id_cashback == id_cashback)
 
-        current_app.db.session.commit()
+            query.update(json_data)
 
-        return jsonify('Success')
+            current_app.db.session.commit()
+
+            return jsonify(constants.SUCCESS_MESSAGE)
+
+        except:
+
+            self.logger.error(sys.exc_info()[0])
+
+        return jsonify({'message': 'Something unexpected happened!'})
+
 
     def delete_cashback(self, id_cashback):
 
-        Cashback.query.filter(Cashback.id_cashback == id_cashback).delete()
+        try:
 
-        current_app.db.session.commit()
+            Cashback.query.filter(Cashback.id_cashback == id_cashback).delete()
 
-        return jsonify('Success')
+            current_app.db.session.commit()
 
+            return jsonify(constants.SUCCESS_MESSAGE)
+
+        except:
+
+            self.logger.error(sys.exc_info()[0])
+
+        return jsonify({'message': 'Something unexpected happened!'})
+
+
+    def get_cash_back_total_amount(self, cpf):
+
+        response = requests.get(API_CASHBACK_URL + cpf, headers=API_HEADER)
+
+        if response.status_code == 200:
+
+            return response.json()
+
+        return None

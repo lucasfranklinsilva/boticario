@@ -1,12 +1,20 @@
 import json
+import re
+import sys
+import logging
 
 from flask import current_app
 from flask_jsonpify import jsonify
+
+from ..constants import J_CPF, SUCCESS_MESSAGE, J_PASSWORD, F_PASSWORD, F_SALT_PASSWORD, CHAR_ENCODE
 from ..models.Reseller_Model import Reseller_Model as Reseller
 from ..serealizer import Reseller_Schema
+import bcrypt
 
 
 class Reseller_Service:
+
+    logger = logging.getLogger()
 
     def get_all_resellers(self):
 
@@ -14,38 +22,79 @@ class Reseller_Service:
 
         return Reseller_Schema(many=True).jsonify(result)
 
-    def get_reseller(self, id_reseller):
+
+    def get_reseller_by_id(self, id_reseller):
 
         result = Reseller.query.filter(Reseller.id_reseller == id_reseller)
 
         return Reseller_Schema(many=True).jsonify(result)
 
+    def get_reseller(self, cpf):
+        result = Reseller.query.filter(Reseller.cpf == cpf)
+
+        return Reseller_Schema(many=True).jsonify(result)
+
     def new_reseller(self, json_data):
 
-        data = json.loads(json.dumps(json_data))
+        try:
 
-        post = Reseller(**data)
+            data = json.loads(json.dumps(json_data))
 
-        current_app.db.session.add(post)
+            salt = bcrypt.gensalt()
 
-        current_app.db.session.commit()
+            data[J_CPF] = re.sub("[^0-9]", "", data[J_CPF])
 
-        return Reseller_Schema().jsonify(post)
+            data[F_PASSWORD] = bcrypt.hashpw(data[J_PASSWORD].encode(), salt).decode(CHAR_ENCODE)
+
+            data[F_SALT_PASSWORD] = salt.decode(CHAR_ENCODE)
+
+            data.pop(J_PASSWORD)
+
+            post = Reseller(**data)
+
+            current_app.db.session.add(post)
+
+            current_app.db.session.commit()
+
+            return Reseller_Schema().jsonify(post)
+
+        except:
+
+            self.logger.error(sys.exc_info()[0])
+
+        return jsonify({'message': 'Something unexpected happened!'})
+
 
     def update_reseller(self, id_reseller, json_data):
 
-        query = Reseller.query.filter(Reseller.id_reseller == id_reseller)
+        try:
 
-        query.update(json_data)
+            query = Reseller.query.filter(Reseller.id_reseller == id_reseller)
 
-        current_app.db.session.commit()
+            query.update(json_data)
 
-        return jsonify('Success')
+            current_app.db.session.commit()
+
+            return jsonify(SUCCESS_MESSAGE)
+
+        except:
+
+            self.logger.error(sys.exc_info()[0])
+
+        return jsonify({'message': 'Something unexpected happened!'})
 
     def delete_reseller(self, id_reseller):
 
-        Reseller.query.filter(Reseller.id_reseller == id_reseller).delete()
+        try:
 
-        current_app.db.session.commit()
+            Reseller.query.filter(Reseller.id_reseller == id_reseller).delete()
 
-        return jsonify('Success')
+            current_app.db.session.commit()
+
+            return jsonify( SUCCESS_MESSAGE)
+
+        except:
+
+            self.logger.error(sys.exc_info()[0])
+
+        return jsonify({'message': 'Something unexpected happened!'})
