@@ -1,12 +1,13 @@
 from flask import Blueprint, request
 from sqlalchemy.exc import SQLAlchemyError
 from flask_jsonpify import jsonify
+import logging
 
 from ..constants import HTTP_SUCCESS, HTTP_BAD_REQUEST
 from ..services.Login_Service import Login_Service
 
+logger = logging.getLogger()
 login_bp = Blueprint('login', __name__)
-
 login_service = Login_Service()
 
 
@@ -24,5 +25,7 @@ def authentication():
 def error_hanlder(e):
 
     error = str(e.__cause__)
+
+    logger.error(error)
 
     return jsonify(error), HTTP_BAD_REQUEST

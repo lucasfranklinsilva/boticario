@@ -1,13 +1,13 @@
 from flask import Blueprint, request
 from sqlalchemy.exc import SQLAlchemyError
 from flask_jsonpify import jsonify
+import logging
 
 from ..constants import HTTP_CREATED, HTTP_SUCCESS, HTTP_BAD_REQUEST
 from ..services.Cashback_Service import Cashback_Service
 
-
+logger = logging.getLogger()
 cashback_bp = Blueprint('cashback', __name__)
-
 cash_back_service = Cashback_Service()
 
 
@@ -85,5 +85,7 @@ def delete(id_cashback):
 def error_hanlder(e):
 
     error = str(e.__cause__)
+
+    logger.error(error)
 
     return jsonify(error), HTTP_BAD_REQUEST

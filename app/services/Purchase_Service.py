@@ -1,5 +1,7 @@
 import json
 import re
+import logging
+import sys
 
 from flask import current_app
 from flask_jsonpify import jsonify
@@ -16,6 +18,8 @@ from ..constants import PURCHASE_DEFAULT_STATUS_ID, PURCHASE_APROVED_STATUS_ID, 
 
 
 class Purchase_Service:
+
+    logger = logging.getLogger()
 
     def get_all_purchases(self):
 
@@ -36,45 +40,69 @@ class Purchase_Service:
 
     def new_purchase(self, json_data):
 
-        data = json.loads(json.dumps(json_data))
+        try:
 
-        data[F_PURCHASE_STATUS_ID] = self.set_purchase_status(data[J_CPF])
+            data = json.loads(json.dumps(json_data))
 
-        data[J_CPF] = re.sub("[^0-9]", "", data[J_CPF])
+            data[F_PURCHASE_STATUS_ID] = self.set_purchase_status(data[J_CPF])
 
-        data[F_RESELLER_ID] = self.get_resseler_id(data[J_CPF])
+            data[J_CPF] = re.sub("[^0-9]", "", data[J_CPF])
 
-        data.pop(J_CPF)
+            data[F_RESELLER_ID] = self.get_resseler_id(data[J_CPF])
 
-        data[F_CASHBACK_PERCENT] = self.set_cash_back(data[J_PRODUCT_PRICE])
+            data.pop(J_CPF)
 
-        post = Purchase(**data)
+            data[F_CASHBACK_PERCENT] = self.set_cash_back(data[J_PRODUCT_PRICE])
 
-        current_app.db.session.add(post)
+            post = Purchase(**data)
 
-        current_app.db.session.commit()
+            current_app.db.session.add(post)
 
-        return Purchase_Schema().jsonify(post)
+            current_app.db.session.commit()
 
-        return True
+            return Purchase_Schema().jsonify(post)
+
+        except:
+
+            self.logger.error(sys.exc_info()[0])
+
+        return jsonify({'message': 'Something unexpected happened!'})
 
     def update_purchase(self, id_purchase, json_data):
 
-        query = Purchase.query.filter(Purchase.id_purchase == id_purchase)
+        try:
 
-        query.update(json_data)
+            query = Purchase.query.filter(Purchase.id_purchase == id_purchase)
 
-        current_app.db.session.commit()
+            query.update(json_data)
 
-        return jsonify(SUCCESS_MESSAGE)
+            current_app.db.session.commit()
+
+            return jsonify(SUCCESS_MESSAGE)
+
+        except:
+
+            self.logger.error(sys.exc_info()[0])
+
+        return jsonify({'message': 'Something unexpected happened!'})
+
 
     def delete_purchase(self, id_purchase):
 
-        Purchase.query.filter(Purchase.id_purchase == id_purchase).delete()
+        try:
 
-        current_app.db.session.commit()
+            Purchase.query.filter(Purchase.id_purchase == id_purchase).delete()
 
-        return jsonify(SUCCESS_MESSAGE)
+            current_app.db.session.commit()
+
+            return jsonify(SUCCESS_MESSAGE)
+
+        except:
+
+            self.logger.error(sys.exc_info()[0])
+
+        return jsonify({'message': 'Something unexpected happened!'})
+
 
     def set_purchase_status(self, resseler_cpf):
 

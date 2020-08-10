@@ -1,5 +1,6 @@
 import json
 
+import seqlog as seqlog
 from flask import Flask
 from flask_migrate import Migrate
 from werkzeug.exceptions import HTTPException
@@ -12,6 +13,11 @@ from app.controllers.Purchase_Controller import purchase_bp
 from app.controllers.Purchase_Status_Controller import purchase_status_bp
 from app.controllers.Cashback_Controller import cashback_bp
 from app.controllers.Login_Controller import login_bp
+
+import logging
+
+seqlog.configure_from_file('app/serilog.yml')
+logger = logging.getLogger()
 
 
 app = Flask(__name__)
@@ -42,6 +48,8 @@ def handle_exception(e):
         "description": e.description,
     })
     response.content_type = constants.JSON_CONTENT
+
+    logger.error(e.description)
 
     return response
 

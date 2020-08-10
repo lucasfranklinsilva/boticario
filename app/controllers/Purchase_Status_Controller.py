@@ -1,12 +1,13 @@
 from flask import Blueprint, request
 from sqlalchemy.exc import SQLAlchemyError
 from flask_jsonpify import jsonify
+import logging
 
 from ..constants import HTTP_CREATED, HTTP_SUCCESS, HTTP_BAD_REQUEST
 from ..services.Purchase_Status_Service import Purchase_Status_Service
 
+logger = logging.getLogger()
 purchase_status_bp = Blueprint('purchase_status', __name__)
-
 purchase_status_service = Purchase_Status_Service()
 
 
@@ -73,5 +74,7 @@ def delete(id_purchase_status):
 def error_hanlder(e):
 
     error = str(e.__cause__)
+
+    logger.error(error)
 
     return jsonify(error), HTTP_BAD_REQUEST

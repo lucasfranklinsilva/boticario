@@ -1,6 +1,8 @@
 import json
-
+import logging
+import sys
 import requests
+
 from flask import current_app
 from flask_jsonpify import jsonify
 
@@ -11,6 +13,8 @@ from ..serealizer import Cashback_Schema
 
 
 class Cashback_Service:
+
+    logger = logging.getLogger()
 
     def get_all_cashbacks(self):
 
@@ -26,33 +30,60 @@ class Cashback_Service:
 
     def new_cashback(self, json_data):
 
-        data = json.loads(json.dumps(json_data))
+        try:
 
-        post = Cashback(**data)
+            data = json.loads(json.dumps(json_data))
 
-        current_app.db.session.add(post)
+            post = Cashback(**data)
 
-        current_app.db.session.commit()
+            current_app.db.session.add(post)
 
-        return Cashback_Schema().jsonify(post)
+            current_app.db.session.commit()
+
+            return Cashback_Schema().jsonify(post)
+
+        except:
+
+            self.logger.error(sys.exc_info()[0])
+
+        return jsonify({'message': 'Something unexpected happened!'})
+
 
     def update_cashback(self, id_cashback, json_data):
 
-        query = Cashback.query.filter(Cashback.id_cashback == id_cashback)
+        try:
 
-        query.update(json_data)
+            query = Cashback.query.filter(Cashback.id_cashback == id_cashback)
 
-        current_app.db.session.commit()
+            query.update(json_data)
 
-        return jsonify(constants.SUCCESS_MESSAGE)
+            current_app.db.session.commit()
+
+            return jsonify(constants.SUCCESS_MESSAGE)
+
+        except:
+
+            self.logger.error(sys.exc_info()[0])
+
+        return jsonify({'message': 'Something unexpected happened!'})
+
 
     def delete_cashback(self, id_cashback):
 
-        Cashback.query.filter(Cashback.id_cashback == id_cashback).delete()
+        try:
 
-        current_app.db.session.commit()
+            Cashback.query.filter(Cashback.id_cashback == id_cashback).delete()
 
-        return jsonify(constants.SUCCESS_MESSAGE)
+            current_app.db.session.commit()
+
+            return jsonify(constants.SUCCESS_MESSAGE)
+
+        except:
+
+            self.logger.error(sys.exc_info()[0])
+
+        return jsonify({'message': 'Something unexpected happened!'})
+
 
     def get_cash_back_total_amount(self, cpf):
 
