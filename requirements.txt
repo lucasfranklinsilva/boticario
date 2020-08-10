@@ -43,3 +43,5 @@ sqlparse==0.3.1
 urllib3==1.25.10
 Werkzeug==1.0.1
 yarg==0.1.9
+pygelf==0.3.6
+seqlog
