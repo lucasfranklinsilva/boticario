@@ -8,21 +8,21 @@ This API allows you to save information about Resellers, Purchases and Cashback.
 * Python 3.8
 * MySql 8.0
 * Main Libraries From Flask:
-	*Flask,
-	*Blueprint,
-	*Request,
-	*Current_app,
-	*Jsonify,
-	*Migrate,
-	*SQLAlchemy,
-	*Marshmallow
-  *Serilog
+	* Flask,
+	* Blueprint,
+	* Request,
+	* Current_app,
+	* Jsonify,
+	* Migrate,
+	* SQLAlchemy,
+	* Marshmallow
+  	* Serilog
 	
 * Tools:
-	*PyCharm IDE,
-	*MySql Workbench,
-	*Git Bash,
-	*Postman,
+	* PyCharm IDE,
+	* MySql Workbench,
+	* Git Bash,
+	* Postman,
 	
 
 ## How to set up ##
