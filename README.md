@@ -8,32 +8,32 @@ This API allows you to save information about Resellers, Purchases and Cashback.
 * Python 3.8
 * MySql 8.0
 * Main Libraries From Flask:
-	* Flask,
-	* Blueprint,
-	* Request,
-	* Current_app,
-	* Jsonify,
-	* Migrate,
-	* SQLAlchemy,
+	* Flask
+	* Blueprint
+	* Request
+	* Current_app
+	* Jsonify
+	* Migrate
+	* SQLAlchemy
 	* Marshmallow
   	* Serilog
 	
 * Tools:
-	* PyCharm IDE,
-	* MySql Workbench,
-	* Git Bash,
-	* Postman,
+	* PyCharm IDE
+	* MySql Workbench
+	* Git Bash
+	* Postman
 	
 
 ## How to set up ##
 
 * Get all the dependecies from the file requirements.txt
 * Create a database named: boticario
-* Set up the database credentials in the App constants file (constants.py) in the section MYSQL. The conection string must have this format mysql://user_name:password@localhost:3306/boticario (The domain localhost and the port can be different depending on your setup)
+* Set up the database credentials in the App constants file (constants.py) in the section #MYSQL. The conection string must have this format mysql://user_name:password@localhost:3306/boticario (The domain localhost and the port can be different depending on your setup)
 * There are two ways to import the tables to the database:
 **Running the migrates**: 
-In the terminal run *Flask db init *(Start the service) -> *Flask db migrate* (Create the migrate files) -> *Flask db Upgrade* (Upgrade the database)
-**Running the queries in the folder utils**
+In the terminal run * Flask db init *(Start the service) -> * Flask db migrate * (Create the migrate files) -> * Flask db Upgrade * (Upgrade the database)
+** Running the queries in the folder utils **
 
 * Installing Seq (Log System): You can run the log system with docker, to download the image, run the command: *docker pull datalust/seq*. Then you can run a instace by the command: *docker run --name seq -d --restart unless-stopped -e ACCEPT_EULA=Y -p 5341:80 datalust/seq:latest*. The config file for the system is in the folder app/serilog.yml. Ref link: https://hub.docker.com/r/datalust/seq
 
