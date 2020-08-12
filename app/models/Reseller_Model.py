@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from app import constants
 from app.models_configuration import *
 
@@ -23,7 +25,7 @@ class Reseller_Model(db.Model):
     last_updated = db.Column(db.DATETIME, nullable=False)
 
     def init(self, email, create_date, salt_password, hash_password, first_name, last_name,
-                 cpf, isactive, last_updated, street = '', city = '', state = '', country = '', zipcode = '', phone = ''):
+                 cpf, isactive, street = '', city = '', state = '', country = '', zipcode = '', phone = ''):
 
         self.email = email
         self.create_date = create_date
@@ -39,7 +41,7 @@ class Reseller_Model(db.Model):
         self.zipcode = zipcode
         self.phone = phone
         self.isactive = isactive
-        self.last_updated = last_updated
+        self.last_updated = datetime.now()
 
 
 

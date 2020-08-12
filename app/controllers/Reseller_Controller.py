@@ -45,24 +45,24 @@ def get(reseller_cpf):
         return error_hanlder(e)
 
 
-@reseller_bp.route('/reseller/update/<reseller_id>', methods=['PUT'])
-def update(reseller_id):
+@reseller_bp.route('/reseller/update/<reseller_cpf>', methods=['PUT'])
+def update(reseller_cpf):
 
     try:
 
-        return reseller_service.update_reseller(reseller_id, request.json), HTTP_SUCCESS
+        return reseller_service.update_reseller(reseller_cpf, request.json), HTTP_SUCCESS
 
     except SQLAlchemyError as e:
 
         return error_hanlder(e)
 
 
-@reseller_bp.route('/reseller/delete/<reseller_id>', methods=['DELETE'])
-def delete(reseller_id):
+@reseller_bp.route('/reseller/delete/<reseller_cpf>', methods=['DELETE'])
+def delete(reseller_cpf):
 
     try:
 
-        return reseller_service.delete_reseller(reseller_id), HTTP_SUCCESS
+        return reseller_service.delete_reseller(reseller_cpf), HTTP_SUCCESS
 
     except SQLAlchemyError as e:
 

@@ -25,16 +25,25 @@ class Purchase_Service:
 
         result = Purchase.query.all()
 
-        for purchase in result:
-            Purchase.cash_back_amount = property(lambda self: self.product_price * purchase.cash_back)
-            purchase.status = self.get_purchase_status(purchase.purchase_status_id)
-            purchase.cpf = self.get_resseler_cpf(purchase.reseller_id)
+        result = self.aditional_data(result)
 
         return Purchase_Schema(many=True).jsonify(result)
 
     def get_purchase(self, id_purchase):
 
         result = Purchase.query.filter(Purchase.id_purchase == id_purchase)
+
+        result = self.aditional_data(result)
+
+        return Purchase_Schema(many=True).jsonify(result)
+
+    def get_reseller_purchases(self, reseller_cpf):
+
+        reseller_id = self.get_resseler_id(reseller_cpf)
+
+        result = Purchase.query.filter(Purchase.reseller_id == reseller_id)
+
+        result = self.aditional_data(result)
 
         return Purchase_Schema(many=True).jsonify(result)
 
@@ -148,4 +157,12 @@ class Purchase_Service:
 
         return None
 
+    def aditional_data(self, result):
+
+        for purchase in result:
+            Purchase.cash_back_amount = property(lambda self: self.product_price * purchase.cash_back)
+            purchase.status = self.get_purchase_status(purchase.purchase_status_id)
+            purchase.cpf = self.get_resseler_cpf(purchase.reseller_id)
+
+        return result
 

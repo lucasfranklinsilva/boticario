@@ -65,11 +65,11 @@ class Reseller_Service:
         return jsonify({'message': 'Something unexpected happened!'})
 
 
-    def update_reseller(self, id_reseller, json_data):
+    def update_reseller(self, cpf, json_data):
 
         try:
 
-            query = Reseller.query.filter(Reseller.id_reseller == id_reseller)
+            query = Reseller.query.filter(Reseller.cpf == cpf)
 
             query.update(json_data)
 
@@ -83,11 +83,11 @@ class Reseller_Service:
 
         return jsonify({'message': 'Something unexpected happened!'})
 
-    def delete_reseller(self, id_reseller):
+    def delete_reseller(self, cpf):
 
         try:
 
-            Reseller.query.filter(Reseller.id_reseller == id_reseller).delete()
+            Reseller.query.filter(Reseller.cpf == cpf).delete()
 
             current_app.db.session.commit()
 
