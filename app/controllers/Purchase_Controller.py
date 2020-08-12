@@ -41,6 +41,17 @@ def get(id_purchase):
 
         return error_hanlder(e)
 
+@purchase_bp.route('/reseller/purchases/<reseller_cpf>', methods=['GET'])
+def get_reseller_purchases(reseller_cpf):
+
+    try:
+
+        return purchase_service.get_reseller_purchases(reseller_cpf), HTTP_SUCCESS
+
+    except SQLAlchemyError as e:
+
+        return error_hanlder(e)
+
 
 @purchase_bp.route('/purchase/update/<id_purchase>', methods=['PUT'])
 def update(id_purchase):
